@@ -8,3 +8,13 @@ export interface SlackCommand {
     response_url: string;
     trigger_id: string;
 }
+
+export interface SlackResponse {
+    response_type?: ResponseType;
+    text: string;
+}
+
+export enum ResponseType {
+    ephemeral = "ephemeral",
+    inChannel = "in_channel",
+}

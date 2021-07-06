@@ -1,21 +1,29 @@
 import { connectToDb } from "../db";
 import { CommandArgumentMap } from "../slack/argument-parser";
 import Chance from "chance";
+import { ResponseType, SlackResponse } from "../slack/types";
 
-export async function doStandupRot(channelId: string, argMap: CommandArgumentMap) {
-    const { at = "<!here|here>", host, secretary } = argMap;
+const helpText = `> :information_desk_person: 站会值日抽签说明:
+> - 主持 + 记录: \`/standup_rot\`
+> - 只抽主持: \`/standup_rot host\`
+> - 只抽记录: \`/standup_rot note\`
+> - 指定提醒对象: \`/standup_rot at @Target\` (默认为 \`@here\`)`;
+
+export async function doStandupRot(channelId: string, argMap: CommandArgumentMap): Promise<SlackResponse> {
+    const { at = ["<!here|here>"], host, noteTaker, help } = argMap;
+
+    if (help) {
+        return { text: helpText };
+    }
 
     const collection = (await connectToDb()).collection("standupMembers");
     const doc = await collection.findOne({
         channelId,
     });
-    if (!doc || !doc.members || doc.members.length === 0) {
-        return "当前频道中还未设置站会成员，请使用`/standup_member`命令添加成员";
-    }
 
     let members = doc.members;
     let hostUser, secretaryUser;
-    const notSpecified = !host && !secretary;
+    const notSpecified = !host && !noteTaker;
     if (notSpecified) {
         const { winner: winner1, remaining } = pickOne(members);
         const { winner: winner2 } = pickOne(remaining);
@@ -27,16 +35,21 @@ export async function doStandupRot(channelId: string, argMap: CommandArgumentMap
             hostUser = winner;
             members = remaining;
         }
-        if (secretary) {
+        if (noteTaker) {
             const { winner, remaining } = pickOne(members);
             secretaryUser = winner;
             members = remaining;
         }
     }
 
-    return `${at} *今日站会中奖者名单 :tada:*
-:microphone: 主持 ${hostUser}
-:writing_hand: 记录 ${secretaryUser}`;
+    const hostLine = `:microphone: 主持 ${hostUser}`;
+    const noteTakerLine = `:writing_hand: 记录 ${secretaryUser}`;
+
+    return {
+        response_type: ResponseType.ephemeral,
+        text: `${at.join(" ")} *今日站会中奖者名单 :tada:*
+${[hostLine, noteTakerLine].filter(Boolean).join("\n")}`,
+    };
 }
 
 function pickOne(pool: string[]): { winner: string; remaining: string[] } {
