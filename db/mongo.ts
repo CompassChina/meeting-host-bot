@@ -1,11 +1,13 @@
 import * as mongo from "mongodb";
 import * as url from "url";
 
-let cachedDb: mongo.Db = null;
+let cachedDb: mongo.Db | null = null;
 
 export async function connectToDb(uri?: string) {
     if (!cachedDb) {
-        uri ??= process.env.mongodb_uri;
+        if (!url) {
+            uri = process.env.mongodb_uri;
+        }
         if (!uri) {
             throw new Error("mongoDB uri not configured");
         }

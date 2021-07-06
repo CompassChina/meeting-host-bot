@@ -7,6 +7,9 @@
     "author": "Zhuo Chen <zhuo.chen@compass.com>",
     "license": "MIT",
     "private": true,
+    "scripts": {
+        "lint": "tsc --noEmit"
+    },
     "devDependencies": {
         "@types/lodash": "^4.14.170",
         "@types/mongodb": "^3.6.19",

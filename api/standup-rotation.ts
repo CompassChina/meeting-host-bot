@@ -1,5 +1,5 @@
 import { VercelRequest, VercelResponse } from "@vercel/node";
-import { parseSlackArgs } from "../command/argument-parser";
+import { parseSlackArgs } from "../slack/argument-parser";
 import { doStandupRot } from "../command/standup-rot";
 
 interface SlackCommand {
