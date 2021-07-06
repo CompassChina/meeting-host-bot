@@ -1,4 +1,4 @@
-import { CommandArgumentMap } from "./argument-parser";
+import { CommandArgumentMap } from "../slack/argument-parser";
 
 export function doStandupRot(argMap: CommandArgumentMap) {
     const { at = "<!here|here>" } = argMap;

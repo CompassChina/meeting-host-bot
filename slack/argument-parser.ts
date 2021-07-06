@@ -14,7 +14,7 @@ export function parseSlackArgs(args: string) {
                 .filter(Boolean);
             if (bits && bits.length > 0) {
                 const [name, ...values] = bits;
-                map[name] = values;
+                map[name] = values ?? [];
             }
             return map;
         }, {} as CommandArgumentMap);
