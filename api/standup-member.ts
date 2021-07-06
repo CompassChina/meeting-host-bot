@@ -16,5 +16,5 @@ export default async function (req: VercelRequest, res: VercelResponse) {
     }
 
     const message = await doStandupMember(channel_id, parseSlackArgs(text));
-    res.status(200).end(message);
+    res.status(200).send(message);
 }

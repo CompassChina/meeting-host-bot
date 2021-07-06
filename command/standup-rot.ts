@@ -46,7 +46,7 @@ export async function doStandupRot(channelId: string, argMap: CommandArgumentMap
     const noteTakerLine = `:writing_hand: 记录 ${secretaryUser}`;
 
     return {
-        response_type: ResponseType.ephemeral,
+        response_type: ResponseType.inChannel,
         text: `${at.join(" ")} *今日站会中奖者名单 :tada:*
 ${[hostLine, noteTakerLine].filter(Boolean).join("\n")}`,
     };
