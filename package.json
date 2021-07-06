@@ -1,0 +1,14 @@
+{
+    "name": "meeting-bot",
+    "version": "1.0.0",
+    "description": "A slack bot for better meetings",
+    "main": "index.js",
+    "repository": "https://github.com/CompassChina/meeting-bot",
+    "author": "Zhuo Chen <zhuo.chen@compass.com>",
+    "license": "MIT",
+    "private": true,
+    "devDependencies": {
+        "@vercel/node": "^1.11.1",
+        "typescript": "^4.3.5"
+    }
+}
