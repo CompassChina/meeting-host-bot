@@ -22,13 +22,13 @@ export async function doStandupRot(channelId: string, argMap: CommandArgumentMap
     });
 
     let members = doc.members;
-    let hostUser, secretaryUser;
+    let hostUser, noteTakerUser;
     const notSpecified = !host && !noteTaker;
     if (notSpecified) {
         const { winner: winner1, remaining } = pickOne(members);
         const { winner: winner2 } = pickOne(remaining);
         hostUser = winner1;
-        secretaryUser = winner2;
+        noteTakerUser = winner2;
     } else {
         if (host) {
             const { winner, remaining } = pickOne(members);
@@ -37,13 +37,13 @@ export async function doStandupRot(channelId: string, argMap: CommandArgumentMap
         }
         if (noteTaker) {
             const { winner, remaining } = pickOne(members);
-            secretaryUser = winner;
+            noteTakerUser = winner;
             members = remaining;
         }
     }
 
-    const hostLine = `:microphone: 主持 ${hostUser}`;
-    const noteTakerLine = `:writing_hand: 记录 ${secretaryUser}`;
+    const hostLine = hostUser ? `:microphone: 主持 ${hostUser}` : undefined;
+    const noteTakerLine = noteTakerUser ? `:writing_hand: 记录 ${noteTakerUser}` : undefined;
 
     return {
         response_type: ResponseType.inChannel,
