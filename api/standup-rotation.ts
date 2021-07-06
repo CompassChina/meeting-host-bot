@@ -1,4 +1,6 @@
 import { VercelRequest, VercelResponse } from "@vercel/node";
+import { parseSlackArgs } from "../command/argument-parser";
+import { doStandupRot } from "../command/standup-rot";
 
 interface SlackCommand {
     channel_id: string;
@@ -26,7 +28,7 @@ export default async function (req: VercelRequest, res: VercelResponse) {
 
     const response = {
         response_type: "in_channel",
-        text: `Rot text: ${text}`,
+        text: doStandupRot(parseSlackArgs(text)),
     };
 
     res.status(200).send(response);
