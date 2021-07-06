@@ -1,24 +1,14 @@
 import { VercelRequest, VercelResponse } from "@vercel/node";
 import { parseSlackArgs } from "../slack/argument-parser";
 import { doStandupRot } from "../command/standup-rot";
-
-interface SlackCommand {
-    channel_id: string;
-    channel_name: string;
-    user_id: string;
-    user_name: string;
-    command: string;
-    text: string;
-    response_url: string;
-    trigger_id: string;
-}
+import { SlackCommand } from "../slack/types";
 
 function error(message: any) {
     console.error("[CMD] Standup Rot", message);
 }
 
 export default async function (req: VercelRequest, res: VercelResponse) {
-    const { command, text, response_url } = req.body as SlackCommand;
+    const { channel_id, command, text, response_url } = req.body as SlackCommand;
     console.log("[CMD] Standup Rot", { command, text, response_url });
     if (command !== "/standup-rot") {
         error(`Bad Command: ${command}`);
@@ -28,7 +18,7 @@ export default async function (req: VercelRequest, res: VercelResponse) {
 
     const response = {
         response_type: "in_channel",
-        text: doStandupRot(parseSlackArgs(text)),
+        text: await doStandupRot(channel_id, parseSlackArgs(text)),
     };
 
     res.status(200).send(response);

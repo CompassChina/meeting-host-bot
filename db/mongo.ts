@@ -1,11 +1,10 @@
 import * as mongo from "mongodb";
-import * as url from "url";
 
 let cachedDb: mongo.Db | null = null;
 
 export async function connectToDb(uri?: string) {
     if (!cachedDb) {
-        if (!url) {
+        if (!uri) {
             uri = process.env.mongodb_uri;
         }
         if (!uri) {

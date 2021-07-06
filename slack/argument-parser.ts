@@ -2,8 +2,8 @@ export type CommandArgumentMap = Record<string, string[]>;
 
 const delimiter = ",";
 
-export function parseSlackArgs(args: string) {
-    return args
+export function parseSlackArgs(args: string): CommandArgumentMap {
+    return (args || "")
         .split(delimiter)
         .map((part) => part.trim())
         .filter(Boolean)
