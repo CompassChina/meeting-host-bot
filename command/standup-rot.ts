@@ -10,7 +10,7 @@ const helpText = `> :information_desk_person: 站会值日抽签说明:
 > - 指定提醒对象: \`/standup_rot at @Target\` (默认为 \`@here\`)`;
 
 export async function doStandupRot(channelId: string, argMap: CommandArgumentMap): Promise<SlackResponse> {
-    const { at = ["<!here|here>"], host, noteTaker, help } = argMap;
+    const { at = ["<!here|here>"], host, note, help } = argMap;
 
     if (help) {
         return { text: helpText };
@@ -22,33 +22,33 @@ export async function doStandupRot(channelId: string, argMap: CommandArgumentMap
     });
 
     let members = doc.members;
-    let hostUser, noteTakerUser;
-    const notSpecified = !host && !noteTaker;
+    let hostUser, noteUser;
+    const notSpecified = !host && !note;
     if (notSpecified) {
         const { winner: winner1, remaining } = pickOne(members);
         const { winner: winner2 } = pickOne(remaining);
         hostUser = winner1;
-        noteTakerUser = winner2;
+        noteUser = winner2;
     } else {
         if (host) {
             const { winner, remaining } = pickOne(members);
             hostUser = winner;
             members = remaining;
         }
-        if (noteTaker) {
+        if (note) {
             const { winner, remaining } = pickOne(members);
-            noteTakerUser = winner;
+            noteUser = winner;
             members = remaining;
         }
     }
 
     const hostLine = hostUser ? `:microphone: 主持 ${hostUser}` : undefined;
-    const noteTakerLine = noteTakerUser ? `:writing_hand: 记录 ${noteTakerUser}` : undefined;
+    const noteLine = noteUser ? `:writing_hand: 记录 ${noteUser}` : undefined;
 
     return {
         response_type: ResponseType.inChannel,
         text: `${at.join(" ")} *今日站会中奖者名单 :tada:*
-${[hostLine, noteTakerLine].filter(Boolean).join("\n")}`,
+${[hostLine, noteLine].filter(Boolean).join("\n")}`,
     };
 }
 
